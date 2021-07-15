@@ -18,7 +18,7 @@
 import ballerina/http;
 import ballerina/regex;
 
-# Amazon S3 connector client
+# Amazon S3 connector client.
 #
 # + amazonS3 - HTTP client
 @display {label: "Amazon S3", iconPath: "logo.png"}
@@ -30,6 +30,10 @@ public client class Client {
     public http:Client amazonS3;
     private http:ClientConfiguration clientConfig = {http1Settings: {chunking: http:CHUNKING_NEVER}};
 
+    # Initializes the AWS S3 connector client.
+    # 
+    # + amazonS3Config - Configuration required to initialize the `Client`
+    # + return - An error on failure of initialization or else `()`
     public isolated function init(ClientConfiguration amazonS3Config) returns error? {
         self.region = (amazonS3Config?.region is string) ? <string>(amazonS3Config?.region) : DEFAULT_REGION;
         self.amazonHost = self.region != DEFAULT_REGION ? regex:replaceFirst(AMAZON_AWS_HOST, SERVICE_NAME,
@@ -47,7 +51,7 @@ public client class Client {
 
     # Retrieves a list of all Amazon S3 buckets that the authenticated user of the request owns.
     # 
-    # + return - If success, returns a list of Bucket record, else returns error
+    # + return - If success, a list of Bucket record, else an error
     @display {label: "List Buckets"}
     remote function listBuckets() returns @tainted Bucket[]|error {
         map<string> requestHeaders = setDefaultHeaders(self.amazonHost);
@@ -61,12 +65,11 @@ public client class Client {
         return error(xmlPayload.toString());
     }
 
-    # Create a bucket.
+    # Creates a bucket.
     # 
-    # + bucketName - A unique name for the bucket.
-    # + cannedACL - The access control list of the new bucket.
-    # 
-    # + return - If failed turns error.
+    # + bucketName - A unique name for the bucket
+    # + cannedACL - The access control list of the new bucket
+    # + return - An error on failure or else `()`
     @display {label: "Create Bucket"}
     remote function createBucket(@display {label: "Bucket Name"} string bucketName,
                                     @display {label: "Access Control List"} CannedACL? cannedACL = ()) returns 
@@ -90,22 +93,21 @@ public client class Client {
         return handleHttpResponse(httpResponse);
     }
 
-    # Retrieve the existing objects in a given bucket
+    # Retrieves the existing objects in a given bucket.
     # 
-    # + bucketName - The name of the bucket.
-    # + delimiter - A delimiter is a character you use to group keys.
-    # + encodingType - The encoding method to be applied on the response.
-    # + maxKeys - The maximum number of keys to include in the response.
-    # + prefix - The prefix of the objects to be listed. If unspecified, all objects are listed.
-    # + startAfter - Object key from where to begin listing.
+    # + bucketName - The name of the bucket
+    # + delimiter - A delimiter is a character you use to group keys
+    # + encodingType - The encoding method to be applied on the response
+    # + maxKeys - The maximum number of keys to include in the response
+    # + prefix - The prefix of the objects to be listed. If unspecified, all objects are listed
+    # + startAfter - Object key from where to begin listing
     # + fetchOwner - Set to true, to retrieve the owner information in the response. By default the API does not return
-    #                the Owner information in the response.
+    #                the Owner information in the response
     # + continuationToken - When the response to this API call is truncated (that is, the IsTruncated response element 
     #                       value is true), the response also includes the NextContinuationToken element. 
     #                       To list the next set of objects, you can use the NextContinuationToken element in the next 
-    #                       request as the continuation-token.
-    # 
-    # + return - If success, returns S3Object[] object, else returns error
+    #                       request as the continuation-token
+    # + return - If success, list of S3 objects, else an error
     @display {label: "List Objects"}
     remote function listObjects(@display {label: "Bucket Name"} string bucketName,
                                 @display {label: "Group Identifier"} string? delimiter = (),
@@ -139,11 +141,10 @@ public client class Client {
 
     # Retrieves objects from Amazon S3.
     #
-    # + bucketName - The name of the bucket.
-    # + objectName - The name of the object.
-    # + objectRetrievalHeaders - Optional headers for the get object.
-    #
-    # + return - If success, returns S3ObjectContent object, else returns error
+    # + bucketName - The name of the bucket
+    # + objectName - The name of the object
+    # + objectRetrievalHeaders - Optional headers for the get object
+    # + return - If success, S3ObjectContent object, else an error
     @display {label: "Get Object"}
     remote function getObject(@display {label: "Bucket Name"} string bucketName,
                                 @display {label: "Object Name"} string objectName,
@@ -172,15 +173,14 @@ public client class Client {
         }
     }
 
-    # Create an object.
+    # Creates an object.
     #
-    # + bucketName - The name of the bucket.
-    # + objectName - The name of the object.
-    # + payload - The file content that needed to be added to the bucket.
-    # + cannedACL - The access control list of the new object.
-    # + objectCreationHeaders - Optional headers for the create object function.
-    #
-    # + return - If failed returns error
+    # + bucketName - The name of the bucket
+    # + objectName - The name of the object
+    # + payload - The file content that needed to be added to the bucket
+    # + cannedACL - The access control list of the new object
+    # + objectCreationHeaders - Optional headers for the create object function
+    # + return - An error on failure or else `()`
     @display {label: "Create Object"}
     remote function createObject(@display {label: "Bucket Name"} string bucketName,
                                     @display {label: "Object Name"} string objectName,
@@ -206,13 +206,12 @@ public client class Client {
         return handleHttpResponse(httpResponse);
     }
 
-    # Delete an object.
+    # Deletes an object.
     # 
-    # + bucketName - The name of the bucket.
+    # + bucketName - The name of the bucket
     # + objectName - The name of the object
-    # + versionId - The specific version of the object to delete, if versioning is enabled.
-    # 
-    # + return - If failed returns error
+    # + versionId - The specific version of the object to delete, if versioning is enabled
+    # + return - An error on failure or else `()`
     @display {label: "Delete Object"}
     remote function deleteObject(@display {label: "Bucket Name"} string bucketName,
                                     @display {label: "Object Name"} string objectName,
@@ -239,9 +238,8 @@ public client class Client {
 
     # Delete a bucket.
     # 
-    # + bucketName - The name of the bucket.
-    # 
-    # + return - If failed returns error
+    # + bucketName - The name of the bucket
+    # + return - An error on failure or else `()`
     @display {label: "Delete Bucket"}
     remote function deleteBucket(@display {label: "Bucket Name"} string bucketName) returns @tainted error? {
         http:Request request = new;
@@ -263,23 +261,23 @@ isolated function setDefaultHeaders(string amazonHost) returns map<string> {
     return requestHeaders;
 }
 
-# Verify the existence of credentials.
+# Verifies the existence of credentials.
 #
-# + accessKeyId - The access key is of the Amazon S3 account.
-# + secretAccessKey - The secret access key of the Amazon S3 account.
+# + accessKeyId - The access key is of the Amazon S3 account
+# + secretAccessKey - The secret access key of the Amazon S3 account
 # 
-# + return - Returns an error object if accessKeyId or secretAccessKey not exists.
+# + return - An error on failure or else `()`
 isolated function verifyCredentials(string accessKeyId, string secretAccessKey) returns error? {
     if ((accessKeyId == "") || (secretAccessKey == "")) {
         return error(EMPTY_VALUES_FOR_CREDENTIALS_ERROR_MSG);
     }
 }
 
-# AmazonS3 Connector configurations can be setup here.
-# + accessKeyId - The access key is of the Amazon S3 account.
-# + secretAccessKey - The secret access key of the Amazon S3 account.
+# AmazonS3 Connector configurations.
+# + accessKeyId - The access key is of the Amazon S3 account
+# + secretAccessKey - The secret access key of the Amazon S3 account
 # + region - The AWS Region. If you don't specify an AWS region, Client uses US East (N. Virginia) as 
-#            default region.
+#            default region
 # + secureSocketConfig - Secure Socket config
 @display {label: "Connection Config"}
 public type ClientConfiguration record {

@@ -25,7 +25,8 @@ public const ACL_BUCKET_OWNER_FULL_CONTROL = "bucket-owner-full-control";
 public type CannedACL ACL_PRIVATE|ACL_PUBLIC_READ|ACL_PUBLIC_READ_WRITE|ACL_AUTHENTICATED_READ|ACL_LOG_DELIVERY_WRITE|
                     ACL_BUCKET_OWNER_READ|ACL_BUCKET_OWNER_FULL_CONTROL;
 
-# Define the bucket type.
+# Defines bucket.
+# 
 # + name - The name of the bucket
 # + creationDate - The creation date of the bucket
 public type Bucket record {
@@ -33,7 +34,8 @@ public type Bucket record {
     string creationDate;
 };
 
-# Define the S3Object type.
+# Define S3Object.
+# 
 # + objectName - The name of the object
 # + lastModified - The last modified date of the object
 # + eTag - The etag of the object
@@ -53,13 +55,13 @@ public type S3Object record {
     byte[] content?;
 };
 
-# Represents the optional headers specific to  getObject function.
+# Represents the optional headers specific to getObject function.
 #
-# + modifiedSince - Return the object only if it has been modified since the specified time.
-# + unModifiedSince - Return the object only if it has not been modified since the specified time.
-# + ifMatch - Return the object only if its entity tag (ETag) is the same as the one specified.
-# + ifNoneMatch - Return the object only if its entity tag (ETag) is different from the one specified.
-# + range - Downloads the specified range bytes of an object. 
+# + modifiedSince - Return the object only if it has been modified since the specified time
+# + unModifiedSince - Return the object only if it has not been modified since the specified time
+# + ifMatch - Return the object only if its entity tag (ETag) is the same as the one specified
+# + ifNoneMatch - Return the object only if its entity tag (ETag) is different from the one specified
+# + range - Downloads the specified range bytes of an object
 public type ObjectRetrievalHeaders record {
     @display {label: "Modified Since"}
     string modifiedSince?;
@@ -75,12 +77,12 @@ public type ObjectRetrievalHeaders record {
 
 # Represents the optional headers specific to createObject function.
 #
-# + cacheControl - Can be used to specify caching behavior along the request/reply chain.
-# + contentDisposition - Specifies presentational information for the object. 
-# + contentEncoding - Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field. 
-# + contentLength - The size of the object, in bytes.
-# + contentMD5 - The base64-encoded 128-bit MD5 digest of the message (without the headers).
-# + expect - When your application uses 100-continue, it does not send the request body until it receives an acknowledgment.The date and time at which the object is no longer able to be cached. 
+# + cacheControl - Can be used to specify caching behavior along the request/reply chain
+# + contentDisposition - Specifies presentational information for the object.
+# + contentEncoding - Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field
+# + contentLength - The size of the object, in bytes
+# + contentMD5 - The base64-encoded 128-bit MD5 digest of the message (without the headers)
+# + expect - When your application uses 100-continue, it does not send the request body until it receives an acknowledgment.The date and time at which the object is no longer able to be cached
 # + expires - The date and time at which the object is no longer cacheable
 public type ObjectCreationHeaders record {
     @display {label: "Cache Control"}
